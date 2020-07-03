@@ -8,7 +8,7 @@ app.use(bodyparser.json());
 
 var mysqlConnection =mysql.createConnection({
     host:'localhost',
-    user:'root',
+    user:'sakshi',
     password:"123",
     database:"nodedb"
 });
@@ -22,23 +22,53 @@ mysqlConnection.connect((err) => {
 });
 
 app.listen(3000,()=>console.log('Express server is running at port no:3000'));
-
+//select all employee values
 app.get('/employees',(req,res)=>{
-    mysqlConnection.query('SELECT * FROM employee',(err,rows,fields)=>{
+    console.log(req.params);
+    mysqlConnection.query('SELECT * FROM Employee',(err,rows,fields)=>{
         if(!err)
-        //console.log(rows);
         res.send(rows);
         else
         console.log(err);
     })
 });
-//get an employee according to name 
-app.get('/employees/:age',(req,res)=>{
-    mysqlConnection.query('SELECT * FROM employee WHERE EmpAge=?'[req.params.age],(err,rows,fields)=>{
+
+//select an employee according to id
+app.get('/employees/:id',(req,res)=>{
+    console.log(req.params);
+    mysqlConnection.query('SELECT * FROM Employee WHERE  EmpId=?',[req.params.id],(err,rows,fields)=>{
         if(!err)
-        //console.log(rows);
         res.send(rows);
         else
         console.log(err);
     })
 });
+
+
+//delete an employee
+app.delete('/employees/:id',(req,res)=>{
+    console.log(req.params);
+    mysqlConnection.query('DELETE  FROM  Employee WHERE  EmpId=?',[req.params.id],(err,rows,fields)=>{
+        if(!err)
+        res.send('Deleted Sucessfully ...');
+        else
+        console.log(err);
+    })
+});
+
+//insert into employee
+var sql = "INSERT INTO Employee (EmpId, EmpName, EmpAge, EmpSalary) VALUES ('3', 'Ajeet Kumar', '27', '45000')";  
+mysqlConnection.query(sql, function (err, result) {  
+if (err) throw err;  
+console.log("1 record inserted");  
+});  
+
+
+
+
+//update into employee
+var sql = "UPDATE Employee SET EmpName = 'prachi' WHERE EmpName = 'Ajeet Kumar'";  
+mysqlConnection.query(sql, function (err, result) {  
+if (err) throw err;  
+console.log(result.affectedRows + " record(s) updated");  
+});  
