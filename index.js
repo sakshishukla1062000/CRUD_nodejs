@@ -21,7 +21,7 @@ mysqlConnection.connect((err) => {
 
 });
 
-app.listen(3000,()=>console.log('Express server is running at port no:3000'));
+app.listen(7000,()=>console.log('Express server is running at port no:3000'));
 //select all employee values
 app.get('/employees',(req,res)=>{
     console.log(req.params);
@@ -32,6 +32,9 @@ app.get('/employees',(req,res)=>{
         console.log(err);
     })
 });
+
+
+
 
 //select an employee according to id
 app.get('/employees/:id',(req,res)=>{
@@ -56,7 +59,7 @@ app.delete('/employees/:id',(req,res)=>{
     })
 });
 
-//insert into employee
+//insert into employee static way
 var sql = "INSERT INTO Employee (EmpId, EmpName, EmpAge, EmpSalary) VALUES ('3', 'Ajeet Kumar', '27', '45000')";  
 mysqlConnection.query(sql, function (err, result) {  
 if (err) throw err;  
@@ -64,6 +67,24 @@ console.log("1 record inserted");
 });  
 
 
+//insert  post method
+app.post("/employeesinsert",(req,res)=>{
+
+    const EmpId =req.body.EmpId;
+    const EmpName=req.body.EmpName;
+    const EmpAge=req.body.EmpAge;
+    const EmpSalary=req.body.EmpSalary;
+
+    mysqlConnection.query("INSERT INTO Employee VALUES(?,?,?,?)",[EmpId,EmpName,EmpAge,EmpSalary],(err,rows,fields)=>{
+        if(!err){
+            res.send(rows);
+            console.log("Created Sucessfully...");
+        }
+        else{
+            console.log(err);
+        }
+    })
+});
 
 
 //update into employee
@@ -72,3 +93,23 @@ mysqlConnection.query(sql, function (err, result) {
 if (err) throw err;  
 console.log(result.affectedRows + " record(s) updated");  
 });  
+
+
+//update post method 
+app.post("/employeesupdate",(req,res)=>{
+
+    const EmpId =req.body.EmpId;
+    const EmpName=req.body.EmpName;
+    const EmpAge=req.body.EmpAge;
+    const EmpSalary=req.body.EmpSalary;
+
+    mysqlConnection.query("UPDATE  Employee SET EmpSalary=? WHERE  EmpSalary=?",[234500,EmpSalary],(err,rows,fields)=>{
+        if(!err){
+            res.send(rows);
+            console.log("Updated  Sucessfully...");
+        }
+        else{
+            console.log(err);
+        }
+    })
+});
